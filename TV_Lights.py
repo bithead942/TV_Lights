@@ -11,6 +11,9 @@ import picamera
 import serial
 from PIL import Image
 
+bFirstBlack = 0
+ser = serial.Serial('/dev/ttyUSB0', 9600)
+        
 while True:
     with picamera.PiCamera() as camera:
         camera.resolution = (32,32)
@@ -72,10 +75,9 @@ while True:
     iGreenAvg = iGreenSum / 9
     iBlueAvg = iBlueSum / 9
 
-    #iGreenAvg = iGreenAvg /2  #Account for green wall
+    iGreenAvg = iGreenAvg /3  #Account for green wall
 
-    if iRedAvg >= 5 and iGreenAvg >= 5 and iBlueAvg >= 5:
-        ser = serial.Serial('/dev/ttyUSB0', 9600)
+    if iRedAvg >= 3 and iGreenAvg >= 3 and iBlueAvg >= 3:
         MyString = 'r=%i,g=%i,b=%i' % (iRedAvg, iGreenAvg, iBlueAvg)
         print "Sending %s" % MyString
         ser.write('%s\n' % MyString)
